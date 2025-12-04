@@ -4,6 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functions
+    initDarkMode();
     initChat();
     initPortfolioFilter();
     initContactForm();
@@ -567,5 +568,65 @@ function initNavbarScroll() {
 
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Prevent negative scroll
     }, 100));
+}
+
+// ============================================
+// DARK MODE FUNCTIONALITY
+// ============================================
+
+function initDarkMode() {
+    // Check for saved dark mode preference or system preference
+    const savedDarkMode = localStorage.getItem('darkMode');
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Set initial dark mode state
+    if (savedDarkMode !== null) {
+        // Use saved preference
+        if (savedDarkMode === 'true') {
+            enableDarkMode();
+        }
+    } else if (prefersDarkMode) {
+        // Use system preference
+        enableDarkMode();
+    }
+    
+    // Add click event to toggle button
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+    }
+}
+
+function enableDarkMode() {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('darkMode', 'true');
+    updateDarkModeIcon();
+}
+
+function disableDarkMode() {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('darkMode', 'false');
+    updateDarkModeIcon();
+}
+
+function toggleDarkMode() {
+    if (document.body.classList.contains('dark-mode')) {
+        disableDarkMode();
+    } else {
+        enableDarkMode();
+    }
+}
+
+function updateDarkModeIcon() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        if (document.body.classList.contains('dark-mode')) {
+            darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            darkModeToggle.title = 'Light Mode';
+        } else {
+            darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            darkModeToggle.title = 'Dark Mode';
+        }
+    }
 }
 
