@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScroll();
     initStatCounters();
     initImageCardEffects();
+    initNavbarScroll();
 });
 
 // ============================================
@@ -531,3 +532,40 @@ function initImageCardEffects() {
         });
     });
 }
+
+// ============================================
+// NAVBAR HIDE ON SCROLL DOWN / SHOW ON SCROLL UP
+// ============================================
+function initNavbarScroll() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    let lastScrollTop = 0;
+    let isHidden = false;
+    const scrollThreshold = 50; // Hide after scrolling 50px
+
+    window.addEventListener('scroll', throttle(function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        // If scrolled down more than threshold and navbar is visible
+        if (scrollTop > scrollThreshold && scrollTop > lastScrollTop && !isHidden) {
+            // Scrolling down - hide navbar
+            navbar.classList.add('navbar-hidden');
+            isHidden = true;
+        } 
+        // If scrolling up or at top
+        else if (scrollTop < lastScrollTop && isHidden) {
+            // Scrolling up - show navbar
+            navbar.classList.remove('navbar-hidden');
+            isHidden = false;
+        }
+        // If at top of page, always show navbar
+        else if (scrollTop <= scrollThreshold) {
+            navbar.classList.remove('navbar-hidden');
+            isHidden = false;
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Prevent negative scroll
+    }, 100));
+}
+
